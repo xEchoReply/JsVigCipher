@@ -1,0 +1,88 @@
+<html>
+<script>
+  var myMessage = prompt("Please enter your message:");
+  var myKey = prompt("Please enter your key:");
+  var eOrD = prompt("Do you wish to (e)ncrypt or (d)ecrypt: ");
+
+  function vigCipher (inputString, inputKey, encryptDecrypt){
+    //Check if third argument is "e" or "d"
+    //If neither, default to encrypt
+    encryptDecrypt=encryptDecrypt[0].toLowerCase();
+    if (encryptDecrypt!="e" && encryptDecrypt!="d") {
+      encryptDecrypt="e";
+    }
+
+    //Make inputString lowercase alpha characters only, store in alphaString
+    var alphaString="";
+    for (var i=0; i < inputString.length; i++) {
+      if (inputString[i].match(/^[A-Za-z]+$/)){
+        alphaString+=inputString[i].toLowerCase();
+      }
+    }
+
+    //Make inputKey lowercase alpha characters only, store in alphaKey
+    var alphaKey="";
+    for (var i=0; i < inputKey.length; i++) {
+      if (inputKey[i].match(/^[A-Za-z]+$/)){
+        alphaKey+=inputKey[i].toLowerCase();
+      }
+    }
+
+    //Generate long key, repeating alphaKey to length of alphaString
+    var longKey="";
+    var c=0;
+    while (longKey.length!=alphaString.length){
+      longKey+=alphaKey[c];
+      c+=1;
+      if (c==alphaKey.length){
+        c=0;
+      }
+    }
+
+    //Encrypt or decrypt alphaString with longKey
+    var abcRange="abcdefghijklmnopqrstuvwxyz";
+    var encryptedString="";
+    var stringIndex, keyIndex, total;
+    for (var i=0; i < alphaString.length; i++) {
+      stringIndex=abcRange.indexOf(alphaString[i]);
+      keyIndex=abcRange.indexOf(longKey[i]);
+      if (encryptDecrypt=="e"){
+        total=stringIndex+keyIndex;
+        if (total>25){
+          total-=26;
+        }
+      }
+      if (encryptDecrypt=="d"){
+        total=stringIndex-keyIndex;
+        if (total<0){
+          total+=26;
+        }
+      }
+      encryptedString+=abcRange[total];
+    }
+
+    //Format alphaString to match case, whitespace, and punctuation of original inputString
+    c=0;
+    finalString="";
+    for (var i=0; i < inputString.length; i++) {
+      if (inputString[i].match(/^[A-Za-z]+$/)){
+        if (inputString[i].match(/^[A-Z]+$/)){
+          finalString+=encryptedString[c].toUpperCase();
+        }
+        if (inputString[i].match(/^[a-z]+$/)){
+          finalString+=encryptedString[c].toLowerCase();
+        }
+        c+=1;
+      } else {
+        finalString+=inputString[i];
+      }
+    }
+    return finalString;
+  }
+
+  document.writeln(vigCipher(myMessage, myKey, eOrD));
+</script>
+<body>
+
+</body>
+</html>
